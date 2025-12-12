@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design & Conception - Portfolio</title>
+    <style>
+        /* --- FONTS --- */
+        @font-face {
+            font-family: "Ade";
+            src: url("Ade-Display.otf") format("opentype");
+        }
+        @font-face {
+            font-family: "Supreme-Extralight";
+            src: url("Supreme-Extralight.woff2") format("opentype");
+        }
+
+        /* --- RESET & SCROLLBAR CACHÉE (FIXE) --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Cache la scrollbar pour Chrome, Safari, Edge et Brave (Webkit) sur TOUS les éléments */
+        ::-webkit-scrollbar {
+            display: none;
+            width: 0; /* Assure que la scrollbar ne prend aucune largeur */
+            height: 0;
+        }
+
+        body {
+            background-color: #F0E9E3;
+            color: #000240;
+            font-family: 'Supreme-Extralight', serif;
+            overflow-x: hidden;
+            padding-bottom: 50px;
+            
+            /* Cache la scrollbar pour IE, Edge (Legacy) et Firefox */
+            -ms-overflow-style: none;  /* IE and Edge (Legacy) */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        /* --- CADRE FIXE (FRAME) --- */
+        .fixed-frame {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .frame-border-top {
+            position: absolute;
+            background-color: #F0E9E3;
+            pointer-events: all;
+        }
+        
+        .frame-border {
+            position: absolute;
+            pointer-events: all;
+        }
+
+        .frame-top {
+            top: 0; left: 0; right: 0; height: 100px; 
+            display: flex; align-items: center; justify-content: center;
+            transition: height 0.3s ease;
+        }
+
+        .frame-left {
+            top: 0; left: 0; bottom: 0; width: 80px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+            padding: 140px 0; transition: width 0.3s ease;
+        }
+
+        .frame-right {
+            top: 0; right: 0; bottom: 0; width: 80px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+            padding: 140px 0; transition: width 0.3s ease;
+        }
+
+        /* Styles pour les liens de navigation */
+        .nav-item {
+            font-family: 'Supreme-Extralight', serif;
+            font-size: 20px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            color: #000240;
+            white-space: nowrap;
+            text-decoration: none; 
+        }
+
+        .nav-item.link { position: relative; display: inline-block; }
+        .nav-item.link::after {
+            content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1px;
+            background-color: #000240; transition: width 0.3s ease;
+        }
+        .nav-item.link:hover::after { width: 100%; }
+
+        .nav-vertical { writing-mode: vertical-rl; }
+        .nav-vertical-left { transform: rotate(180deg); }
+        
+        .nav-vertical.link::after {
+            top: 0; left: -3px; right: auto; bottom: auto; width: 1px; height: 0;
+            transition: height 0.3s ease;
+        }
+        .nav-vertical.link:hover::after { width: 1px; height: 100%; }
+
+        /* --- CONTENEUR PRINCIPAL --- */
+        .container {
+            margin: 0 auto;
+            padding: 100px 80px 100px 80px; 
+            width: 100%;
+            max-width: 1910px; 
+            transition: padding 0.3s ease;
+        }
+
+        /* --- HERO --- */
+        .hero {
+            width: 100%; max-width: 1750px; height: 825px; 
+            margin: 0 auto 100px auto; border: 1px solid #000240;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; background-color: #F0E9E3; padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-family: 'Ade', serif; font-size: clamp(45px, 5vw, 85px); 
+            font-weight: 100; letter-spacing: clamp(2px, 0.5vw, 8px);
+            margin-bottom: 0; line-height: 1.1;
+        }
+
+        .hero-divider {
+            width: 100%; max-width: 600px; height: 1px;
+            background-color: #000240; margin: 65px 0;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(14px, 1.5vw, 18px); letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        
+        /* --- PROJETS --- */
+        .project {
+            width: 100%; max-width: 1750px; height: 850px;
+            margin: 0 auto 100px auto; background-color: #F0E9E3;
+            box-shadow: -5px -5px 10px 0 rgba(0, 2, 64, 0.1), 7.5px 7.5px 10px 0 rgba(0, 2, 64, 0.2);
+            position: relative; z-index: 1; 
+        }
+
+        .project-image-container {
+            position: absolute; width: 54%; height: 94%; top: 3%;
+            cursor: pointer; z-index: 5; transition: z-index 0s linear 0.3s;
+        }
+
+        .project-left .project-image-container { left: 1.5%; }
+        .project-right .project-image-container { right: 1.5%; }
+
+        .project-image {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+        }
+
+        .project-image-container:hover { z-index: 10; transition-delay: 0s; }
+        .project-image-container:hover .project-image {
+            transform: scale(1.008);
+            box-shadow: 0 0 15px 0px rgba(0, 2, 64, 0.35);
+        }
+
+        .project-content-box {
+            position: absolute; width: 31%; min-width: 350px; height: 53%;
+            top: 50%; transform: translateY(-50%); display: flex;
+            flex-direction: column; justify-content: flex-end; align-items: center;
+            padding-bottom: 30px; z-index: 2; pointer-events: none; 
+        }
+        .project-text-box { width: 100%; pointer-events: auto; }
+
+        .project-left .project-content-box { right: 7%; }
+        .project-right .project-content-box { left: 7%; }
+
+        .project-title {
+            font-family: 'Ade', serif; font-size: clamp(40px, 5vw, 85px);
+            font-weight: 400; letter-spacing: 4px; color: #F0E9E3;
+            text-shadow: 2px 2px 4px rgba(0, 2, 64, 0.3), -1px -1px 2px rgba(0, 2, 64, 0.2);
+            line-height: 1; position: absolute; text-align: center;
+            width: 40%; top: calc(50% - 225px - 60px); 
+            pointer-events: none; z-index: 3;
+        }
+
+        .project-left .project-title { right: 2.5%; }
+        .project-right .project-title { left: 2.5%; }
+
+        .project-divider { width: 100%; height: 1px; background-color: #000240; margin: 0; }
+        .project-divider-top { margin-bottom: 50px; }
+        .project-divider-bottom { margin-top: 50px; }
+
+        .project-description {
+            font-size: clamp(14px, 1.2vw, 18px); line-height: 2.2; font-weight: 300;
+        }
+
+        /* PHOTO WIDE */
+        .project.photo-wide .project-image-container { width: 68%; }
+        .project.photo-wide .project-content-box { width: 23%; min-width: 250px; }
+        .project.photo-wide.project-left .project-content-box { right: 3.5%; }
+        .project.photo-wide.project-right .project-content-box { left: 3.5%; }
+        .project.photo-wide .project-title { width: 30%; }
+        .project.photo-wide.project-left .project-title { right: 0.5%; }
+        .project.photo-wide.project-right .project-title { left: 0.5%; }
+
+
+        /* --- RESPONSIVE TABLETTE (Paysage ~1194px) --- */
+        @media screen and (max-width: 1350px) {
+            .frame-left, .frame-right { width: 50px; padding: 100px 0;}
+            .frame-top { height: 70px; }
+            .container { padding: 70px 50px; }
+            .hero { height: 600px; } 
+            .project { height: 650px; } 
+            .project-title { top: 15%; }
+            .project-content-box { min-width: auto; width: 38%; }
+            .project-divider-top, .project-divider-bottom { margin-top: 25px; margin-bottom: 25px; }
+            .nav-item { font-size: 16px; } 
+        }
+
+        /* --- RESPONSIVE MOBILE --- */
+        @media screen and (max-width: 900px) {
+            .project { height: auto; padding-bottom: 50px; display: flex; flex-direction: column; }
+            .project-image-container { 
+                position: relative; width: 90%; height: 400px; 
+                top: 0; left: 5% !important; right: 5% !important; margin-top: 20px;
+            }
+            .project-content-box {
+                position: relative; width: 90%; left: 5% !important; right: 5% !important;
+                transform: none; margin-top: 20px;
+            }
+            .project-title {
+                position: relative; width: 100%; top: 0; left: 0 !important; right: 0 !important;
+                color: #000240; 
+                text-shadow: none;
+                margin-top: 20px;
+            }
+        }
+
+
+        /* --- MODALE --- */
+        #about-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(240, 233, 227, 0.45);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 2000;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+            backdrop-filter: blur(4px);
+        }
+        .modal-hidden { visibility: hidden; opacity: 0; }
+        .modal-visible { visibility: visible; opacity: 1; }
+
+        #modal-content {
+            width: 90%; max-width: 1200px;
+            height: 80vh; max-height: 600px;
+            background-color: #F0E9E3;
+            position: relative;
+            padding: 0 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: -5px -5px 10px 0 rgba(0, 2, 64, 0.1), 7.5px 7.5px 10px 0 rgba(0, 2, 64, 0.2);
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.8s ease;
+        }
+        .modal-hidden #modal-content { transform: scale(0.95); opacity: 0; }
+        .modal-visible #modal-content { transform: scale(1); opacity: 1; }
+
+        #modal-image {
+            width: 30%; height: 75%; object-fit: cover; flex-shrink: 0;
+        }
+
+        #modal-text {
+            width: 65%; height: 75%;
+            font-size: clamp(13px, 1.2vw, 15px);
+            line-height: 1.5; padding-right: 20px;
+            overflow-y: auto; 
+            text-align: justify;
+            
+            /* Les règles pour Firefox/IE étaient déjà incluses dans le BODY et sont héritées ici */
+        }
+
+        #modal-text p { margin-bottom: 20px; white-space: pre-line; text-align-last: left; }
+
+        #close-modal {
+            position: absolute; top: 20px; right: 25px;
+            font-size: 24px; font-family: Arial, sans-serif; color: #000240;
+            cursor: pointer; width: 30px; height: 30px;
+            text-align: center; line-height: 30px;
+            transition: transform 0.3s ease; z-index: 10;
+        }
+        #close-modal:hover { transform: rotate(90deg); }
+
+        @media screen and (max-width: 1000px) {
+            #modal-content { flex-direction: column; padding: 40px; height: auto; }
+            #modal-image { display: none; } 
+            #modal-text { width: 100%; height: auto; overflow: visible; }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="fixed-frame">
+        <div class="frame-border-top frame-top">
+            <div class="nav-item">BECAUSE WE NEED TIME</div>
+        </div>
+        
+        <div class="frame-border frame-left">
+            <div class="nav-item nav-vertical nav-vertical-left link" id="open-about-modal">Boureau Pierre</div>
+            <a href="https://www.instagram.com/because_we_need_time/" target="_blank" class="nav-item nav-vertical nav-vertical-left link">Instagram</a>
+        </div>
+        
+        <div class="frame-border frame-right">
+            <a href="https://bwnt.fr/" target="_blank" class="nav-item nav-vertical link">BWNT</a>
+            <a href="mailto:pierre.boureau@proton.me" class="nav-item nav-vertical link">Contact</a>
+        </div>
+    </div>
+
+    <div id="about-modal" class="modal-hidden">
+        <div id="modal-content">
+            <span id="close-modal">&times;</span>
+            <img id="modal-image" src="https://api.bwnt.fr/uploads/Boureau_Pierre_debout_35668adf4f.png" alt="Photo de Boureau Pierre">
+            <div id="modal-text" class="supreme-extralight">
+                <p>
+                    Je suis un créateur français formé à l’horlogerie et au design.
+                    Mon travail explore la rencontre entre matière et idée, cherchant dans la première la lumière, le rythme, la trace d’une pensée plus profonde : celle qui relie la forme à l’être.
+                </p>
+                <p>
+                    J’accorde une attention particulière aux mécanismes invisibles, aux systèmes qui tiennent un objet sans s’imposer au regard. La technique n’est pas seulement un moyen, mais un langage qui relie l’intention à la forme qu’elle engendre.
+                </p>
+                <p>
+                    La culture nourrit mes doutes autant que mes élans. L’art, la musique et l’architecture m’ouvrent de multiples chemins de pensée pour comprendre, chercher, résoudre.
+                </p>
+                <p>
+                    Dans chaque projet, je m’efforce de faire dialoguer intuition et justesse, calcul et sensibilité. Mon approche privilégie la sobriété des lignes, le travail de la matière et de la lumière. Le soin du détail trouve alors tout son sens dans l’exigence et l’élégance.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <section class="hero">
+            <h1>DESIGN & CONCEPTION</h1>
+            <div class="hero-divider"></div>
+            <p class="hero-subtitle">Watchmaking - Product Design - Photographie</p>
+        </section>
+
+        <div class="project project-left">
+            <div class="project-image-container" data-project="chromia">
+                <img src="https://api.bwnt.fr/uploads/Chromia_70fd9b4de8.png" alt="Chromia" class="project-image">
+            </div>
+            <h2 class="project-title">CHROMIA</h2>
+            <div class="project-content-box">
+                <div class="project-text-box">
+                    <div class="project-divider project-divider-top"></div>
+                    <p class="project-description">
+                        Le conception de cette lampe repose sur une directive simple : deux points de contact pour un angle ajustable. Ce principe, à la manière d'une équerre rétractable, permet au dispositif d'orientation et au bras flexible, qui se situe entre les zones de contact, de s'adapter aux différents besoins.
+                    </p>
+                    <div class="project-divider project-divider-bottom"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project project-right">
+            <div class="project-image-container" data-project="Pelatessera">
+                <img src="https://api.bwnt.fr/uploads/Paletessera_1_ee74fed0cb.png" alt="Pelatessera" class="project-image">
+            </div>
+            <h2 class="project-title">PELATESSERA</h2>
+            <div class="project-content-box">
+                <div class="project-text-box">
+                    <div class="project-divider project-divider-top"></div>
+                    <p class="project-description">
+                        Cette conception s'inscit dans d'une ligne à notre quartier tels détectés par contact. Un concept unique dans l'espace de design où la forme rencontre la fonction. L'inspiration provenant de la géométrie sacrée influence chaque décision de conception.
+                    </p>
+                    <div class="project-divider project-divider-bottom"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project project-left">
+            <div class="project-image-container" data-project="Syncope">
+                <img src="https://api.bwnt.fr/uploads/Syncope_1_40944fbad3.png" alt="Syncope" class="project-image">
+            </div>
+            <h2 class="project-title">SYNCOPE</h2>
+            <div class="project-content-box">
+                <div class="project-text-box">
+                    <div class="project-divider project-divider-top"></div>
+                    <p class="project-description">
+                        L'intégration de cette forme relève un des directrices simple dans l'optique à deux points. Ce concept unique dans l'apparence d'une équerre rétractable, permet au dispositif d'orientation et aux différentes flexibilités qui se situent entre les zones, de réadapter aux différents besoins.
+                    </p>
+                    <div class="project-divider project-divider-bottom"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project project-right">
+            <div class="project-image-container" data-project="divers">
+                <img src="https://api.bwnt.fr/uploads/Rose_laiton_340f099f21.png" alt="Divers" class="project-image">
+            </div>
+            <h2 class="project-title">DIVERS</h2>
+            <div class="project-content-box">
+                <div class="project-text-box">
+                    <div class="project-divider project-divider-top"></div>
+                    <p class="project-description">
+                        Projet dédié à une valeurité sans prix contraint partie de l'objectif. Dans l'espace de temps relatifs ou lien déguisé dans l'objectif produit dans les grandes lignes. Cette vision intègre des éléments de design contemporain avec une sensibilité artisanale.
+                    </p>
+                    <div class="project-divider project-divider-bottom"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project project-left photo-wide">
+            <div class="project-image-container" data-project="Photo">
+                <img src="https://api.bwnt.fr/uploads/Argentique_1_984b2df5e8.png" alt="Photo" class="project-image">
+            </div>
+            <h2 class="project-title">PHOTO</h2>
+            <div class="project-content-box">
+                <div class="project-text-box">
+                    <div class="project-divider project-divider-top"></div>
+                    <p class="project-description">
+                        Une exploration visuelle de la nature et de ses éléments à différentes échelles. Un projet photographique capturant l'essence brute des paysages côtiers.
+                    </p>
+                    <div class="project-divider project-divider-bottom"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project project-right photo-wide">
+            <div class="project-image-container" data-project="PHOTO">
+                <img src="https://api.bwnt.fr/uploads/Fire_cloud_1acf4ab5d7.png" alt="PHOTO" class="project-image">
+            </div>
+            <h2 class="project-title">PHOTO</h2>
+            <div class="project-content-box">
+                <div class="project-text-box">
+                    <div class="project-divider project-divider-top"></div>
+                    <p class="project-description">
+                        La photographie comme révélateur de narratives visuelles. L'exploration des nuances atmosphériques et chromatiques dans un registre contemplatif.
+                    </p>
+                    <div class="project-divider project-divider-bottom"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- LOGIQUE EXISTANTE (gestion des images) ---
+        const projectImages = {
+            chromia: [
+                'https://api.bwnt.fr/uploads/Chromia_70fd9b4de8.png',
+                'https://api.bwnt.fr/uploads/Chromia_2_e25d4027d7.png',
+                'https://api.bwnt.fr/uploads/Chromia_3_fa7a77023e.png'
+            ],
+            Pelatessera: [
+                'https://api.bwnt.fr/uploads/Paletessera_1_ee74fed0cb.png',
+                'https://api.bwnt.fr/uploads/Paletessera_2_94b61c7116.png',
+            ],
+            Syncope: [
+                'https://api.bwnt.fr/uploads/Syncope_1_40944fbad3.png',
+                'https://api.bwnt.fr/uploads/Syncope_2_a1e318392e.png',
+            ],
+            divers: [
+                'https://api.bwnt.fr/uploads/Rose_laiton_340f099f21.png',
+            ],
+            Photo: [
+                'https://api.bwnt.fr/uploads/Argentique_1_984b2df5e8.png',
+                'https://api.bwnt.fr/uploads/Argentique_2_d378d660ba.png',
+                'https://api.bwnt.fr/uploads/Argentique_2_d378d660ba.png'
+            ],
+            PHOTO: [
+                'https://api.bwnt.fr/uploads/Fire_cloud_1acf4ab5d7.png',
+                'https://api.bwnt.fr/uploads/Garden_853483c3c2.png',
+                'https://api.bwnt.fr/uploads/Housse_29b5be03e3.png'
+            ]
+        };
+
+        const currentIndex = {
+            chromia: 0,
+            Pelatessera: 0,
+            Syncope: 0,
+            divers: 0,
+            Photo: 0,
+            PHOTO: 0
+        };
+
+        document.querySelectorAll('.project-image-container').forEach(container => {
+            container.addEventListener('click', function() {
+                const projectName = this.dataset.project;
+                const images = projectImages[projectName];
+                const img = this.querySelector('img');
+                
+                currentIndex[projectName] = (currentIndex[projectName] + 1) % images.length;
+                img.src = images[currentIndex[projectName]];
+            });
+        });
+
+
+        // --- LOGIQUE MODALE ---
+        const modal = document.getElementById('about-modal');
+        const openBtn = document.getElementById('open-about-modal');
+        const closeBtn = document.getElementById('close-modal');
+        let isScrollListenerActive = false;
+
+        function openModal() {
+            modal.classList.remove('modal-hidden');
+            modal.classList.add('modal-visible');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => {
+                if (!isScrollListenerActive) {
+                    window.addEventListener('scroll', closeModal);
+                    isScrollListenerActive = true;
+                }
+            }, 100); 
+        }
+
+        function closeModal() {
+            modal.classList.remove('modal-visible');
+            modal.classList.add('modal-hidden');
+            document.body.style.overflow = 'auto';
+            if (isScrollListenerActive) {
+                window.removeEventListener('scroll', closeModal);
+                isScrollListenerActive = false;
+            }
+        }
+
+        openBtn.addEventListener('click', openModal);
+        closeBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
