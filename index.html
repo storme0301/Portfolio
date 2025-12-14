@@ -383,19 +383,19 @@
             }
 
             .project-left .project-image-container {
-                left: 4%;
+                left: 3%;
             }
 
             .project-left .project-content-box {
-                right: 4%;
+                right: 3%;
             }
 
             .project-right .project-image-container {
-                right: 4%;
+                right: 3%;
             }
 
             .project-right .project-content-box {
-                left: 4%;
+                left: 3%;
             }
 
             .project-title {
@@ -407,11 +407,11 @@
             }
 
             .project-left .project-title {
-                right: 2%;
+                right: 3%;
             }
 
             .project-right .project-title {
-                left: 2%;
+                left: 3%;
             }
 
             .project-divider-top, .project-divider-bottom {
@@ -486,6 +486,33 @@
                 margin-top: 0;
                 padding: 0 25px;
             }
+
+            /* --- CORRECTIFS AJOUTÉS POUR LA VERSION MOBILE DES PROJETS "PHOTO" --- */
+            
+            /* On écrase les largeurs desktop spécifiques de "photo-wide" */
+            .project.photo-wide .project-image-container {
+                width: 90%;
+                left: 5% !important;
+                right: auto !important;
+            }
+
+            /* On réinitialise le titre pour qu'il soit centré et prenne toute la largeur */
+            .project.photo-wide .project-title {
+                width: 100%;
+                left: 0 !important;
+                right: 0 !important;
+                text-align: center;
+            }
+
+            /* On ajuste la boîte de contenu pour qu'elle soit fluide */
+            .project.photo-wide .project-content-box {
+                width: 100%;
+                left: 0 !important;
+                right: 0 !important;
+                padding: 0 25px;
+            }
+
+            /* ------------------------------------------------------------------- */
 
             .project-text-box {
                 width: 100%;
@@ -771,7 +798,7 @@
             Photo: [
                 'https://api.bwnt.fr/uploads/Argentique_1_984b2df5e8.png',
                 'https://api.bwnt.fr/uploads/Argentique_2_d378d660ba.png',
-                'https://api.bwnt.fr/uploads/Argentique_2_d378d660ba.png'
+                'https://api.bwnt.fr/uploads/Argentique_3_0971c440ff.png'
             ],
             PHOTO: [
                 'https://api.bwnt.fr/uploads/Fire_cloud_1acf4ab5d7.png',
@@ -837,4 +864,3 @@
     </script>
 </body>
 </html>
-
